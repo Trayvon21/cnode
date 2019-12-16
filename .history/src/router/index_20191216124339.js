@@ -34,7 +34,7 @@ const routes = [{
     }, {
         path: '*',
         name: 'error',
-        component: () => ('../views/error')
+        component:
     }
 
 ]
