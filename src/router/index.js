@@ -23,7 +23,7 @@ const routes = [{
                 import ('../views/Login/Login')
         }]
     }, {
-        path: '/:id',
+        path: '/topic/:id',
         component: Home,
         children: [{
             path: '',

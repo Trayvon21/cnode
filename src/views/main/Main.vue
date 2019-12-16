@@ -27,7 +27,9 @@ export default {
     Navs,Tables
   },
   methods: {},
-  mounted() {},
+  mounted() {
+      this.$store.dispatch("getList");
+  },
   watch: {},
   computed: {}
 };

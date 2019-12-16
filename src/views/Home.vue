@@ -41,7 +41,7 @@ export default {
   },
   methods: {},
   mounted() {
-    this.$store.dispatch("getList");
+  
   },
   watch: {},
   computed: {}
