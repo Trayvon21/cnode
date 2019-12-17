@@ -4,7 +4,8 @@
       <img src="../../assets/images/logo.svg" alt @click="$router.push('/')" />
     </div>
     <div class="search">
-      <el-input placeholder></el-input>
+      <img src="../../assets/images/search.svg" alt />
+      <input type="text" />
     </div>
     <div>
       <ul class="nav">
@@ -45,7 +46,7 @@ export default {
 .top {
   padding: 10px;
   height: 40px;
-  width: 90%;
+  width: 80%;
   margin: 0 auto;
   display: flex;
   font-size: 14px;
@@ -56,7 +57,29 @@ export default {
     cursor: pointer;
   }
   .search {
-    margin-left: 10px;
+       margin-top: 5px;
+      margin-left: 20px;
+    position: relative;
+    input {
+   
+      height: 30px;
+      border-radius: 15px;
+      background: gray;
+      outline: none;
+      border: 0px;
+    }
+    input:hover {
+      background: white;
+    }
+    img {
+      width: 26px;
+      color: black;
+      font-weight: bolder;
+      line-height: 30px;
+      position: absolute;
+      left: 5px;
+      top: 4px;
+    }
     width: 240px;
   }
   .nav {

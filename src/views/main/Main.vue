@@ -20,8 +20,11 @@ export default {
     Tables
   },
   methods: {},
+  created(){
+     
+  },
   mounted() {
-    this.$store.dispatch("getList");
+   
   },
   watch: {},
   computed: {}

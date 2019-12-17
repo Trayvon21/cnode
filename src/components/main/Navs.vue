@@ -18,10 +18,13 @@ export default {
   },
   components: {},
   methods: {
+    //颜色改变
     recolor(n) {
       console.log(n);
       this.actived = n;
+      
     }
+
   },
   mounted() {},
   watch: {},
@@ -32,7 +35,7 @@ export default {
 <style scoped lang='scss'>
 .nav {
   display: flex;
-  height: 20px;
+  height: 30px;
   width: 100%;
   padding: 10px;
   background: #f6f6f6;
@@ -42,7 +45,7 @@ export default {
     cursor: pointer;
     font-size: 14px;
     text-align: center;
-    padding: 3px;
+    padding: 4px;
     border-radius: 3px;
   }
   .actived {

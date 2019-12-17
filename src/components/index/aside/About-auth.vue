@@ -1,11 +1,11 @@
 <template>
-  <div v-if="$route.path.length>10">
+  <div v-if="$route.path.length>10&&item&&auth">
     <div class="aside-box">
       <div class="title">作者</div>
-      <div class="desc">
+      <div class="auth-desc">
         <div>
-        <img :src="auth.avatar_url" alt />
-        {{auth.githubUsername}}
+          <img :src="auth.avatar_url" alt />
+          {{auth.githubUsername}}
         </div>
       </div>
       <div>积分：{{auth.score}}</div>
@@ -29,9 +29,9 @@ export default {
   },
   components: {},
   methods: {
-    goto(id){
-       this.$router.push({path: `/topic/${id}`});
-        this.$store.dispatch("getData", id);
+    goto(id) {
+      this.$router.push({ path: `/topic/${id}` });
+      this.$store.dispatch("getData", id);
     }
   },
   mounted() {},
@@ -39,6 +39,9 @@ export default {
   computed: {
     auth() {
       return this.$store.state.auth;
+    },
+    item() {
+      return this.$store.state.detail;
     }
   }
 };
@@ -51,7 +54,11 @@ export default {
   margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .title {
-    margin: 10px 0 30px;
+    margin: 10px 0 10px;
+  }
+  .auth-desc{
+    line-height: 30px;
+    margin:10px 0; 
   }
   .desc {
     font-size: 14px;
@@ -60,6 +67,7 @@ export default {
     text-overflow: ellipsis;
     line-height: 30px;
     height: 30px;
+    cursor: pointer;
   }
   .btn {
     margin-top: 5px;

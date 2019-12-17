@@ -14,10 +14,10 @@
             <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
           <el-form-item label="请输入密码" prop="passwd">
-            <el-input v-model="ruleForm.passwd"></el-input>
+            <el-input type="password" v-model="ruleForm.passwd"></el-input>
           </el-form-item>
           <el-form-item label="请确认密码" prop="repasswd">
-            <el-input v-model="ruleForm.repasswd"></el-input>
+            <el-input  type="password" v-model="ruleForm.repasswd" @keyup.enter="login('ruleForm')"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login('ruleForm')">登录</el-button>
@@ -50,15 +50,15 @@ export default {
       rules: {
         username: [
           { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
         ],
         passwd: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
         ],
         repasswd: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
           { validator: flag, trigger: "blur" }
         ]
       }

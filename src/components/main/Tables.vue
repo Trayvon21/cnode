@@ -1,19 +1,26 @@
 <template>
   <div class="tables">
-    <div v-for="item in list" :key="item.id" class="desc">
+    <div v-for="(item,index) in list" :key="item.id" class="desc">
       <!-- 用户图标 -->
       <div class="images">
         <img :src="item.author.avatar_url" alt />
       </div>
       <!-- 访问量 -->
       <div class="visited">
-        <span>{{item.reply_count}}</span> /
-        <span>{{item.visit_count}}</span>
+        <span style="color:purple">{{item.reply_count}}</span>/
+        <span style="color:lightgray">{{item.visit_count}}</span>
       </div>
+      <!-- 标签 -->
       <div :class="checkclass(item)?'green':'gray'" class="label">{{checkLabel(item)}}</div>
+      <!-- 标题 -->
       <div class="title" @click="goto(item.id)">{{item.title}}</div>
+      <div class="replie-icon">
+        <img :src="arr2[index]" alt />
+      </div>
+      <!-- 时间 -->
       <div class="date">{{Formate(item.last_reply_at)}}</div>
     </div>
+    <!-- 分页栏 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -39,6 +46,7 @@ export default {
   filters: {},
   components: {},
   methods: {
+    // 分页栏的js
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pagesize = val;
@@ -47,6 +55,7 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
+    //判断标签的js
     checkLabel(item) {
       if (item.top) return "置顶";
       else if (item.good) return "精华";
@@ -57,31 +66,39 @@ export default {
       if (item.top || item.good) return true;
       else return false;
     },
+    //跳转到详情页
     goto(id) {
       this.$router.push(`topic/${id}`);
     },
+    //时间格式化
     Formate(val) {
       let time = Number(this.$dayjs() - this.$dayjs(val)) / 1000;
-      // let time = this.$dayjs(this.date)- this.$dayjs(val).;
       if (time < 60) retrun`几秒前`;
       else if (time / 60 <= 60) return `${Math.floor(time / 60)}分钟前`;
-      else if (time / 60 / 60 <= 60) return `${Math.floor(time / 60 / 60)}小时前`;
+      else if (time / 60 / 60 <= 60)
+        return `${Math.floor(time / 60 / 60)}小时前`;
       else if (time / 60 / 60 / 24 <= 24)
         return `${Math.floor(time / 60 / 60 / 24)}天前`;
-      else return "一个月以前"
-    }
+      else return "一个月以前";
+    },
+   
   },
-  mounted() {
-    this.date = new Date();
+  created() {
+    this.$store.dispatch("getList");
   },
+  mounted() {},
   watch: {},
   computed: {
+    //获取列表文件
     list() {
       let arr = this.$store.state.list;
       return arr.slice(
         (this.currentPage - 1) * this.pagesize,
         this.currentPage * this.pagesize
       );
+    },
+    arr2() {
+      return this.$store.state.arr;
     }
   }
 };
@@ -140,5 +157,13 @@ img {
 }
 .gray {
   background: lightgray;
+}
+.replie-icon{
+  position: absolute;
+  right:100px;
+  img{
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>

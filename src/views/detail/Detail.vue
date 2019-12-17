@@ -1,5 +1,5 @@
 <template>
-  <div v-if="auth">
+  <div v-if="item">
     <!-- 文章 -->
     <div class="article-bgcolor">
       <div class="article-top">
@@ -9,13 +9,13 @@
       <div
         class="article-msg"
       >● 发布于 {{Formate(item.create_at)}} ● 作者 {{item.author.loginname}} ● {{item.visit_count}} 次浏览 ● 来自 {{checkLabel1(item)}}</div>
-      <div v-html="item.content" class="article-desc"></div>
+      <div v-html="item.content" class="markdown-body article-desc"></div>
     </div>
     <!-- 回复内容 -->
     <div class="replies">
       <div class="replies-title">{{item.replies.length}} 条回复</div>
       <div v-if="item.replies.length>0" class="replies-desc">
-        <div v-for="(desc,index) in item.replies" :key="desc.id">
+        <div v-for="(desc,index) in list" :key="desc.id">
           <div class="replie">
             <div class="replie-top">
               <div>
@@ -33,13 +33,14 @@
       </div>
       <div v-else>暂无评论</div>
       <el-pagination
+        class="paging"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 15, 20, 40]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="item.replies.length"
       ></el-pagination>
     </div>
   </div>
@@ -64,6 +65,7 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
+
     //置顶和精华标签
     checkLabel(item) {
       if (item) {
@@ -86,7 +88,7 @@ export default {
     //格式化时间
     Formate(val) {
       let time = Number(this.$dayjs(this.date) - this.$dayjs(val)) / 1000;
-      if (time < 60) retrun`几秒前`;
+      if (time < 60) return `几秒前`;
       else if (time / 60 <= 60) return `${Math.floor(time / 60)}分钟前`;
       else if (time / 60 / 60 <= 60)
         return `${Math.floor(time / 60 / 60)}小时前`;
@@ -96,21 +98,32 @@ export default {
     },
     //获取数据
     getDatas() {
+      this.$store.state.auth = {};
       this.$store.state.detail = {};
       this.$store.dispatch("getList");
       let count = this.$route.path.split("/");
       this.$store.dispatch("getData", count[count.length - 1]);
     }
   },
-  mounted() {
+  created() {
     this.getDatas();
   },
+  mounted() {},
   watch: {},
   computed: {
+    list() {
+      let arr = this.item.replies;
+      return arr.slice(
+        (this.currentPage - 1) * this.pagesize,
+        this.currentPage * this.pagesize
+      );
+    },
     item() {
+      console.log(this.$store.state.detail);
       return this.$store.state.detail;
     },
-       auth() {
+    auth() {
+      console.log(this.$store.state.auth);
       return this.$store.state.auth;
     }
   }
@@ -123,6 +136,9 @@ export default {
   overflow: hidden;
   .article-top {
     margin: 20px;
+    .label {
+      margin-bottom: 20px;
+    }
   }
   .article-title {
     font-size: 30px;
@@ -140,11 +156,17 @@ export default {
   padding-left: 20px;
   border-bottom: 1xp solid gray;
 }
-.article-desc {
+.article-desc /deep/ {
   img {
-    width: 100%;
+    display: block;
+    margin: 0 auto;
   }
-  padding: 10px;
+  p {
+    text-indent: 2em;
+    line-height: 2em;
+  }
+
+  padding: 0 30px;
 }
 .replies {
   margin-top: 20px;
@@ -168,6 +190,7 @@ export default {
       margin-left: 10px;
     }
     .ups {
+      cursor: pointer;
       position: absolute;
       right: 15px;
       height: 30px;
@@ -191,5 +214,8 @@ export default {
     border-radius: 5px;
   }
 }
-@import "../../styles/common";
+.paging {
+  background: white;
+  margin-bottom: 20px;
+}
 </style>

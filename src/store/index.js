@@ -9,6 +9,7 @@ export default new Vuex.Store({
         detail: {},
         auth: {},
         username: '',
+        arr: [],
     },
     mutations: {
         //保存/topics数据
@@ -27,21 +28,29 @@ export default new Vuex.Store({
     },
     actions: {
         //get /topics 主题首页
-        async getList({ commit }) {
+        async getList({ commit, state }) {
             let res = await axios.req('/topics')
             commit('GET_LIST', res.data)
+            res.data.map(item => {
+                axios.req(`/topic/${item.id}`).then(res => {
+                    let count = res.data.replies[0].author.avatar_url;
+                    return state.arr.push(count)
+                })
+            })
         },
         async getData({ commit, dispatch }, val) {
             let res = await axios.req(`/topic/${val}`)
             commit('GET_DATA', res.data)
-            dispatch('getAuth', res.data.author.loginname)
+            if (res.data.author.loginname) {
+                dispatch('getAuth', res.data.author.loginname)
+            }
+
         },
         async getAuth({ commit }, val) {
             let res = await axios.req(`/user/${val}`)
             console.log(res);
             commit('GET_AUTH', res.data)
-        }
-
+        },
     },
     getters: {
 
