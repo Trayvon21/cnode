@@ -12,8 +12,8 @@
         <li>新手入门</li>
         <li>API</li>
         <li>关于</li>
-        <li>注册</li>
-        <li @click="$router.push('/login')">登录</li>
+        <li @click="$router.push('/login')" v-if="!username">登录</li>
+        <li @click="exit" v-else>退出</li>
       </ul>
     </div>
   </div>
@@ -25,10 +25,19 @@ export default {
     return {};
   },
   components: {},
-  methods: {},
+  methods: {
+    exit() {
+      this.$store.commit("SET_USER", "");
+      localStorage.removeItem("username");
+    }
+  },
   mounted() {},
   watch: {},
-  computed: {}
+  computed: {
+    username() {
+      return this.$store.state.username;
+    }
+  }
 };
 </script>
 

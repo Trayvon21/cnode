@@ -1,7 +1,8 @@
 <template>
   <div>
+    <aboutmy v-if="username" :username="username" />
     <!-- 登录注册界面的关于 -->
-    <div class="aside-box" v-if="$route.path==='/login'">
+    <div class="aside-box" v-if="$route.path==='/login' ">
       <div class="title">关于</div>
       <div>CNode：Node.js专业中文社区</div>
       <div>在这里你可以：</div>
@@ -11,7 +12,7 @@
       <div>和其它人一起进步</div>
     </div>
     <!-- 登录注册前界面 -->
-    <div class="aside-box" v-if="$route.path==='/'">
+    <div class="aside-box" v-if="$route.path==='/' && !username">
       <div class="title">CNode:Node.js专业中文社区</div>
       <div class="desc">
         您可以
@@ -21,7 +22,8 @@
       <el-button type="primary" class="btn" @click="$router.push('/login')">通过GitHub登录</el-button>
     </div>
     <!-- 关于作者 -->
-   <about/>
+    <about />
+
     <!-- 广告 -->
     <div class="aside-box" v-if="$route.path!=='/login'">
       <div>
@@ -88,7 +90,8 @@
 </template>
 
 <script>
-import about from "./aside/About-auth"
+import about from "./aside/About-auth";
+import aboutmy from "./aside/About-my";
 export default {
   data() {
     return {
@@ -96,13 +99,16 @@ export default {
     };
   },
   components: {
-    about
+    about,
+    aboutmy
   },
   methods: {},
   mounted() {},
   watch: {},
   computed: {
-  
+    username(){
+      return this.$store.state.username
+    }
   }
 };
 </script>

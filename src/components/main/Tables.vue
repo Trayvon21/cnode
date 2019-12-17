@@ -14,6 +14,15 @@
       <div class="title" @click="goto(item.id)">{{item.title}}</div>
       <div class="date">{{Formate(item.last_reply_at)}}</div>
     </div>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[10, 15, 20, 40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="40"
+    ></el-pagination>
   </div>
 </template>
 
@@ -21,12 +30,23 @@
 export default {
   data() {
     return {
-      date: null
+      date: null,
+      arr: [],
+      currentPage: 1,
+      pagesize: 10
     };
   },
   filters: {},
   components: {},
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pagesize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    },
     checkLabel(item) {
       if (item.top) return "置顶";
       else if (item.good) return "精华";
@@ -41,20 +61,14 @@ export default {
       this.$router.push(`topic/${id}`);
     },
     Formate(val) {
-      let time = this.$dayjs(this.date).valueOf() - this.$dayjs(val).valueOf();
-      if (Number(this.$dayjs(time).format("MM")) > 1) {
-        return "一个月以前";
-      } else if (Number(this.$dayjs(time).format("DD")) > 1) {
-        return `${Number(this.$dayjs(time).format("DD")) - 1}天前`;
-      } else if (Number(this.$dayjs(time).format("hh")) > 1) {
-        return `${Number(this.$dayjs(time).format("hh")) - 1}小时前`;
-      } else if (Number(this.$dayjs(time).format("mm")) > 1) {
-        return `${Number(this.$dayjs(time).format("mm")) - 1}分钟前`;
-      } else if (Number(this.$dayjs(time).format("ss")) > 1) {
-        return `${Number(this.$dayjs(time).format("ss")) - 1}秒前`;
-      } else {
-        return "错误";
-      }
+      let time = Number(this.$dayjs() - this.$dayjs(val)) / 1000;
+      // let time = this.$dayjs(this.date)- this.$dayjs(val).;
+      if (time < 60) retrun`几秒前`;
+      else if (time / 60 <= 60) return `${Math.floor(time / 60)}分钟前`;
+      else if (time / 60 / 60 <= 60) return `${Math.floor(time / 60 / 60)}小时前`;
+      else if (time / 60 / 60 / 24 <= 24)
+        return `${Math.floor(time / 60 / 60 / 24)}天前`;
+      else return "一个月以前"
     }
   },
   mounted() {
@@ -63,7 +77,11 @@ export default {
   watch: {},
   computed: {
     list() {
-      return this.$store.state.list;
+      let arr = this.$store.state.list;
+      return arr.slice(
+        (this.currentPage - 1) * this.pagesize,
+        this.currentPage * this.pagesize
+      );
     }
   }
 };

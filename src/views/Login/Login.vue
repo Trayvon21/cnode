@@ -69,7 +69,9 @@ export default {
     login(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
-          alert("submit!");
+          localStorage.setItem("username", this.ruleForm.username);
+          this.$store.commit("SET_USER", this.ruleForm.username);
+          this.$router.push("/")
         } else {
           console.log("error submit!!");
           return false;
@@ -79,8 +81,8 @@ export default {
     cancel(ruleForm) {
       this.$refs[ruleForm].resetFields();
     },
-    goto(path){
-      this.$router.push(path)
+    goto(path) {
+      this.$router.push(path);
     }
   },
   mounted() {},

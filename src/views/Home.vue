@@ -7,16 +7,16 @@
       </el-header>
       <!-- 中间 -->
       <div class="middle">
-      <el-container >
-        <el-main>
-          <!-- 列表部分 main.vue与login.vue -->
-          <router-view />
-        </el-main>
-        <!-- 侧边栏 Aside -->
-        <el-aside>
-          <Aside />
-        </el-aside>
-      </el-container>
+        <el-container>
+          <el-main>
+            <!-- 列表部分 main.vue与login.vue -->
+            <router-view />
+          </el-main>
+          <!-- 侧边栏 Aside -->
+          <el-aside>
+            <Aside />
+          </el-aside>
+        </el-container>
       </div>
       <!-- 底部 Footer -->
       <el-footer>
@@ -40,9 +40,7 @@ export default {
     Footer
   },
   methods: {},
-  mounted() {
-  
-  },
+  mounted() {},
   watch: {},
   computed: {}
 };

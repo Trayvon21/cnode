@@ -1,23 +1,11 @@
 <template>
-  <div v-if="$route.path.length>10">
+  <div >
     <div class="aside-box">
-      <div class="title">作者</div>
+      <div class="title">欢迎登陆</div>
       <div class="desc">
-        <div>
-        <img :src="auth.avatar_url" alt />
-        {{auth.githubUsername}}
-        </div>
+        <div>{{username}}</div>
+        <el-button class="btn" @click="exit">退出</el-button>
       </div>
-      <div>积分：{{auth.score}}</div>
-    </div>
-    <div class="aside-box">
-      <div class="title">作者其他话题</div>
-      <div
-        class="desc"
-        v-for="item in auth.recent_topics"
-        :key="item.index"
-        @click="goto(item.id)"
-      >{{ item.title }}</div>
     </div>
   </div>
 </template>
@@ -27,20 +15,22 @@ export default {
   data() {
     return {};
   },
+  props:{
+    username:{
+      type:String,
+      default:null,
+    }
+  },
   components: {},
   methods: {
-    goto(id){
-       this.$router.push({path: `/topic/${id}`});
-        this.$store.dispatch("getData", id);
+    exit() {
+       this.$store.commit("SET_USER", '');
+       localStorage.removeItem('username')
     }
   },
   mounted() {},
   watch: {},
-  computed: {
-    auth() {
-      return this.$store.state.auth;
-    }
-  }
+  computed: {}
 };
 </script>
 
@@ -59,13 +49,15 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 30px;
-    height: 30px;
+    height: 80px;
   }
   .btn {
+    height: 30px;
     margin-top: 5px;
   }
   img {
     width: 30px;
+    line-height: 30px;
   }
 }
 </style>

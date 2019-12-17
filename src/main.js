@@ -6,7 +6,7 @@ import service from './http'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import dayjs from 'dayjs';
-
+import 'github-markdown-css';
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 Vue.prototype.$axios = service

@@ -44,9 +44,9 @@ service.interceptors.response.use(response => {
     }
     return response.data
 }, err => {
-    // if (err.response.status === 401) {
-    //   Message.error(err.response.data.msg)
-    // }
+    if (err.response.status === 401) {
+        Message.error(err.response.data.msg)
+    }
 })
 
 service.req = function(...params) {

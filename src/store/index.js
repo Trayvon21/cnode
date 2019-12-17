@@ -7,7 +7,8 @@ export default new Vuex.Store({
     state: {
         list: [],
         detail: {},
-        auth: {}
+        auth: {},
+        username: '',
     },
     mutations: {
         //保存/topics数据
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         ['GET_AUTH'](state, data) {
             state.auth = data
+        },
+        ['SET_USER'](state, data) {
+            state.username = data
         }
     },
     actions: {
@@ -29,7 +33,6 @@ export default new Vuex.Store({
         },
         async getData({ commit, dispatch }, val) {
             let res = await axios.req(`/topic/${val}`)
-            console.log(res.data);
             commit('GET_DATA', res.data)
             dispatch('getAuth', res.data.author.loginname)
         },
