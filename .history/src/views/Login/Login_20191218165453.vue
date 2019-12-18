@@ -69,6 +69,7 @@ export default {
     login(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
+          
           localStorage.setItem("username", this.ruleForm.username);
           this.$store.commit("SET_USER", this.ruleForm.username);
           this.$router.go(-1)

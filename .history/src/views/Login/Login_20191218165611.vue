@@ -17,7 +17,7 @@
             <el-input type="password" v-model="ruleForm.passwd"></el-input>
           </el-form-item>
           <el-form-item label="请确认密码" prop="repasswd">
-            <el-input  type="password" v-model="ruleForm.repasswd" @keyup.enter="login('ruleForm')"></el-input>
+            <el-input type="password" v-model="ruleForm.repasswd" @keyup.enter="login('ruleForm')"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login('ruleForm')">登录</el-button>
@@ -69,6 +69,23 @@ export default {
     login(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
+          open() {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      }
           localStorage.setItem("username", this.ruleForm.username);
           this.$store.commit("SET_USER", this.ruleForm.username);
           this.$router.go(-1)

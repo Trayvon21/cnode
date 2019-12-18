@@ -17,7 +17,7 @@
             <el-input type="password" v-model="ruleForm.passwd"></el-input>
           </el-form-item>
           <el-form-item label="请确认密码" prop="repasswd">
-            <el-input  type="password" v-model="ruleForm.repasswd" @keyup.enter="login('ruleForm')"></el-input>
+            <el-input type="password" v-model="ruleForm.repasswd" @keyup.enter="login('ruleForm')"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login('ruleForm')">登录</el-button>
@@ -58,7 +58,12 @@ export default {
         ],
         repasswd: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
-          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          },
           { validator: flag, trigger: "blur" }
         ]
       }
@@ -69,9 +74,27 @@ export default {
     login(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
+          this.$confirm("是否登录?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+            .then(() => {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "已取消"
+              });
+              return
+            });
           localStorage.setItem("username", this.ruleForm.username);
           this.$store.commit("SET_USER", this.ruleForm.username);
-          this.$router.go(-1)
+          this.$router.go(-1);
         } else {
           console.log("error submit!!");
           return false;
