@@ -22,7 +22,6 @@ export default {
     recolor(n) {
       console.log(n);
       this.actived = n;
-      
     }
 
   },

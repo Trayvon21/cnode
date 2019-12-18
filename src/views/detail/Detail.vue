@@ -1,21 +1,27 @@
 <template>
-  <div v-if="item">
+  <div>
     <!-- 文章 -->
     <div class="article-bgcolor">
       <div class="article-top">
-        <span :class="checkclass(item)?'green':'gray'" class="label">{{checkLabel(item)}}</span>
-        <span class="article-title">{{item.title}}</span>
+        <span :class="checkclass(detail)?'green':'gray'" class="label">{{checkLabel(detail)}}</span>
+        <span class="article-title">{{detail.title}}</span>
       </div>
       <div
         class="article-msg"
-      >● 发布于 {{Formate(item.create_at)}} ● 作者 {{item.author.loginname}} ● {{item.visit_count}} 次浏览 ● 来自 {{checkLabel1(item)}}</div>
-      <div v-html="item.content" class="markdown-body article-desc"></div>
+      >● 发布于 {{Formate(detail.create_at)}} ● 作者 {{detail.author.loginname}} ● {{detail.visit_count}} 次浏览 ● 来自 {{checkLabel1(detail)}}</div>
+      <div v-html="detail.content" class="markdown-body article-desc"></div>
     </div>
     <!-- 回复内容 -->
     <div class="replies">
-      <div class="replies-title">{{item.replies.length}} 条回复</div>
-      <div v-if="item.replies.length>0" class="replies-desc">
-        <div v-for="(desc,index) in list" :key="desc.id">
+      <div class="replies-title">{{detail.replies.length}} 条回复</div>
+      <div v-if="detail.replies.length>0" class="replies-desc">
+        <div
+          v-for="(desc,index) in detail.replies.slice(
+        (this.currentPage - 1) * this.pagesize,
+        this.currentPage * this.pagesize
+      )"
+          :key="desc.id"
+        >
           <div class="replie">
             <div class="replie-top">
               <div>
@@ -40,7 +46,7 @@
         :page-sizes="[10, 15, 20, 40]"
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="item.replies.length"
+        :total="detail.replies.length"
       ></el-pagination>
     </div>
   </div>
@@ -95,37 +101,26 @@ export default {
       else if (time / 60 / 60 / 24 <= 24)
         return `${Math.floor(time / 60 / 60 / 24)}天前`;
       else return "一个月以前";
-    },
-    //获取数据
-    getDatas() {
-      this.$store.state.auth = {};
-      this.$store.state.detail = {};
-      this.$store.dispatch("getList");
-      let count = this.$route.path.split("/");
-      this.$store.dispatch("getData", count[count.length - 1]);
     }
+    //获取数据
   },
-  created() {
-    
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.dispatch("getData", to.params.id);
+    });
   },
-  mounted() {
-    this.getDatas();
+  beforeRouteLeave(to, from, next) {
+    this.$store.state.detail = "";
+    this.$store.state.auth = "";
+    next();
   },
+  mounted() {},
   watch: {},
   computed: {
-    list() {
-      let arr = this.item.replies;
-      return arr.slice(
-        (this.currentPage - 1) * this.pagesize,
-        this.currentPage * this.pagesize
-      );
-    },
-    item() {
-      console.log(this.$store.state.detail);
+    detail() {
       return this.$store.state.detail;
     },
     auth() {
-      console.log(this.$store.state.auth);
       return this.$store.state.auth;
     }
   }

@@ -24,30 +24,33 @@ export default new Vuex.Store({
         },
         ['SET_USER'](state, data) {
             state.username = data
-        }
+        },
+        ['SET_REPLIE'](state, data) {
+            state.arr.push(data[0].author.avatar_url)
+        },
     },
     actions: {
         //get /topics 主题首页
-        async getList({ commit, state }) {
-            let res = await axios.req('/topics')
-            commit('GET_LIST', res.data)
+        async getList({ commit }) {
+            let res = await axios.get('/topics')
+            commit('GET_LIST', res.data) //table的列表
             res.data.map(item => {
-                axios.req(`/topic/${item.id}`).then(res => {
-                    let count = res.data.replies[0].author.avatar_url;
-                    return state.arr.push(count)
-                })
+                this.dispatch('getCion', item)
             })
         },
+        async getCion({ commit }, item) {
+            let res = await axios.get(`/topic/${item.id}`)
+            commit('SET_REPLIE', res.data.replies)
+        },
+
         async getData({ commit, dispatch }, val) {
-            let res = await axios.req(`/topic/${val}`)
+            let res = await axios.get(`/topic/${val}`)
             commit('GET_DATA', res.data)
-            if (res.data.author.loginname) {
-                dispatch('getAuth', res.data.author.loginname)
-            }
+            dispatch('getAuth', res.data.author.loginname)
 
         },
         async getAuth({ commit }, val) {
-            let res = await axios.req(`/user/${val}`)
+            let res = await axios.get(`/user/${val}`)
             console.log(res);
             commit('GET_AUTH', res.data)
         },

@@ -20,9 +20,7 @@ export default {
     Tables
   },
   methods: {},
-  created(){
-     
-  },
+  created(){},
   mounted() {
    
   },

@@ -15,7 +15,7 @@
       <!-- 标题 -->
       <div class="title" @click="goto(item.id)">{{item.title}}</div>
       <div class="replie-icon">
-        <img :src="arr2[index]" alt />
+        <img :src="arr[index]" alt />
       </div>
       <!-- 时间 -->
       <div class="date">{{Formate(item.last_reply_at)}}</div>
@@ -37,8 +37,6 @@
 export default {
   data() {
     return {
-      date: null,
-      arr: [],
       currentPage: 1,
       pagesize: 10
     };
@@ -68,7 +66,7 @@ export default {
     },
     //跳转到详情页
     goto(id) {
-      this.$router.push(`topic/${id}`);
+      this.$router.push({name:"detail",params:{id:id}});
     },
     //时间格式化
     Formate(val) {
@@ -80,24 +78,27 @@ export default {
       else if (time / 60 / 60 / 24 <= 24)
         return `${Math.floor(time / 60 / 60 / 24)}天前`;
       else return "一个月以前";
-    },
-   
+    }
+  },
+   beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.$store.dispatch("getList")
+    })
   },
   created() {
-    this.$store.dispatch("getList");
+    this.$store.dispatch("getList")
   },
   mounted() {},
   watch: {},
   computed: {
     //获取列表文件
     list() {
-      let arr = this.$store.state.list;
-      return arr.slice(
+      return this.$store.state.list.slice(
         (this.currentPage - 1) * this.pagesize,
         this.currentPage * this.pagesize
       );
     },
-    arr2() {
+    arr() {
       return this.$store.state.arr;
     }
   }
@@ -158,10 +159,10 @@ img {
 .gray {
   background: lightgray;
 }
-.replie-icon{
+.replie-icon {
   position: absolute;
-  right:100px;
-  img{
+  right: 100px;
+  img {
     width: 24px;
     height: 24px;
   }

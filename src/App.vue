@@ -1,5 +1,5 @@
 <template>
-  <div class="wraper">
+  <div class="wraper" v-cloak>
     <template>
       <el-backtop target=".wraper">
         <div
@@ -41,6 +41,9 @@ export default {
 </script>
 
 <style lang='scss'>
+[v-cloak]{
+    display: none;
+}
 * {
   margin: 0;
   padding: 0;
