@@ -1,7 +1,7 @@
 <template>
   <div class="top">
     <div class="logo">
-      <img src="../../assets/images/logo.svg" alt @click="$router.push('/')" />
+      <img src="../../assets/images/logo.svg" alt @click="goto('/')" />
     </div>
     <div class="search">
       <img src="../../assets/images/search.svg" alt />
@@ -9,11 +9,11 @@
     </div>
     <div>
       <ul class="nav">
-        <li @click="$router.push('/')">首页</li>
+        <li @click="goto('/')">首页</li>
         <li>新手入门</li>
         <li>API</li>
         <li>关于</li>
-        <li @click="$router.push('/login')" v-if="!username">登录</li>
+        <li @click="goto('/login')" v-if="!username">登录</li>
         <li @click="exit" v-else>退出</li>
       </ul>
     </div>
@@ -27,6 +27,11 @@ export default {
   },
   components: {},
   methods: {
+    goto(item){
+      if(this.$route.path!==item){
+        this.$router.push(item)
+      }
+    },
     exit() {
       this.$store.commit("SET_USER", "");
       localStorage.removeItem("username");
