@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$route.path.length>10&&item&&auth">
+  <div v-if="$route.path.length>10&&auth">
     <div class="aside-box">
       <div class="title">作者</div>
       <div class="auth-desc">
@@ -29,9 +29,11 @@ export default {
   },
   components: {},
   methods: {
-    goto(id) {
-      this.$router.push({ path: `/topic/${id}` });
-      this.$store.dispatch("getData", id);
+    goto(item) {
+      if (item !== this.$route.params.id) {
+        this.$router.push({ name: "detail", params: { id: item } });
+        this.$router.go(0)
+      }
     }
   },
   mounted() {},
@@ -39,9 +41,6 @@ export default {
   computed: {
     auth() {
       return this.$store.state.auth;
-    },
-    item() {
-      return this.$store.state.detail;
     }
   }
 };
@@ -56,9 +55,9 @@ export default {
   .title {
     margin: 10px 0 10px;
   }
-  .auth-desc{
+  .auth-desc {
     line-height: 30px;
-    margin:10px 0; 
+    margin: 10px 0;
   }
   .desc {
     font-size: 14px;

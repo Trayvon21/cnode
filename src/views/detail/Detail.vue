@@ -8,15 +8,15 @@
       </div>
       <div
         class="article-msg"
-      >● 发布于 {{Formate(detail.create_at)}} ● 作者 {{detail.author.loginname}} ● {{detail.visit_count}} 次浏览 ● 来自 {{checkLabel1(detail)}}</div>
+      >● 发布于 {{Formate(detail.create_at)}} ● 作者{{author}}  ● {{detail.visit_count}} 次浏览 ● 来自 {{checkLabel1(detail)}}</div>
       <div v-html="detail.content" class="markdown-body article-desc"></div>
     </div>
     <!-- 回复内容 -->
     <div class="replies">
-      <div class="replies-title">{{detail.replies.length}} 条回复</div>
-      <div v-if="detail.replies.length>0" class="replies-desc">
+      <div class="replies-title">{{replies.length}} 条回复</div>
+      <div v-if="replies.length>0" class="replies-desc">
         <div
-          v-for="(desc,index) in detail.replies.slice(
+          v-for="(desc,index) in replies.slice(
         (this.currentPage - 1) * this.pagesize,
         this.currentPage * this.pagesize
       )"
@@ -27,7 +27,9 @@
               <div>
                 <img :src="desc.author.avatar_url" alt />
               </div>
-              <div>{{desc.author.loginname}} ● {{index+1}}楼 {{Formate(desc.create_at)}}</div>
+              <div
+                v-if="desc.author.loginname"
+              >{{desc.author.loginname}} ● {{index+1}}楼 {{Formate(desc.create_at)}}</div>
               <div class="ups">
                 <div>{{desc.ups.length}}</div>
                 <img src="../../assets/images/ups.svg" alt />
@@ -46,7 +48,7 @@
         :page-sizes="[10, 15, 20, 40]"
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="detail.replies.length"
+        :total="replies.length"
       ></el-pagination>
     </div>
   </div>
@@ -57,7 +59,10 @@ export default {
   data() {
     return {
       currentPage: 1,
-      pagesize: 10
+      pagesize: 10,
+      detail: {},
+      replies: [],
+      author:""
     };
   },
   components: {},
@@ -101,29 +106,32 @@ export default {
       else if (time / 60 / 60 / 24 <= 24)
         return `${Math.floor(time / 60 / 60 / 24)}天前`;
       else return "一个月以前";
-    }
-    //获取数据
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.$store.dispatch("getData", to.params.id);
-    });
-  },
-  beforeRouteLeave(to, from, next) {
-    this.$store.state.detail = "";
-    this.$store.state.auth = "";
-    next();
-  },
-  mounted() {},
-  watch: {},
-  computed: {
-    detail() {
-      return this.$store.state.detail;
     },
-    auth() {
-      return this.$store.state.auth;
+    //获取数据
+    getdata() {
+      this.$axios
+        .req(`/topic/${this.$route.params.id}`)
+        .then(res => {
+          if (res.success === true) {
+            this.detail = res.data;
+            this.author =res.data.author.loginname
+            if (res.data.replies.length > 0) {
+              this.replies = res.data.replies;
+            }
+            this.$axios.req(`/user/${res.data.author.loginname}`).then(re => {
+              if (res.success === true) {
+                this.$store.state.auth = re.data;
+              }
+            });
+          }
+        })
     }
-  }
+  },
+  mounted() {
+    this.getdata();
+  },
+  watch: {},
+  computed: {}
 };
 </script>
 

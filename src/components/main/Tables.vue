@@ -1,6 +1,6 @@
 <template>
   <div class="tables">
-    <div v-for="(item,index) in list" :key="item.id" class="desc">
+    <div v-for="(item,index) in show" :key="item.id" class="desc">
       <!-- 用户图标 -->
       <div class="images">
         <img :src="item.author.avatar_url" alt />
@@ -38,7 +38,9 @@ export default {
   data() {
     return {
       currentPage: 1,
-      pagesize: 10
+      pagesize: 10,
+      arr: [],
+      list: []
     };
   },
   filters: {},
@@ -66,7 +68,7 @@ export default {
     },
     //跳转到详情页
     goto(id) {
-      this.$router.push({name:"detail",params:{id:id}});
+      this.$router.push({ name: "detail", params: { id: id } });
     },
     //时间格式化
     Formate(val) {
@@ -78,28 +80,39 @@ export default {
       else if (time / 60 / 60 / 24 <= 24)
         return `${Math.floor(time / 60 / 60 / 24)}天前`;
       else return "一个月以前";
+    },
+    getList() {
+      this.$axios.req("/topics").then(res => {
+        if (res.success === true) {
+          this.list = res.data;
+          res.data.map(item => {
+            this.$axios.req(`/topic/${item.id}`).then(re => {
+              if (re.success === true) {
+                let coust = re.data.replies;
+                if (coust.length>0) {
+                  this.arr.push(coust[0].author.avatar_url);
+                } else {
+                  this.arr.push("");
+                }
+              }
+            });
+          });
+        }
+      });
     }
   },
-   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$store.dispatch("getList")
-    })
+
+  mounted() {
+    this.getList();
   },
-  created() {
-    this.$store.dispatch("getList")
-  },
-  mounted() {},
   watch: {},
   computed: {
     //获取列表文件
-    list() {
-      return this.$store.state.list.slice(
+    show() {
+      return this.list.slice(
         (this.currentPage - 1) * this.pagesize,
         this.currentPage * this.pagesize
       );
-    },
-    arr() {
-      return this.$store.state.arr;
     }
   }
 };
